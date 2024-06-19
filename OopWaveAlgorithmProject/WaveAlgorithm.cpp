@@ -92,11 +92,39 @@ bool WaveAlgorithm::MakeWaves()
             }
             if (isFinded) break;
         }
+        if (fronts[!frontCurrent].size() == 0)
+        {
+            isFinished = false;
+            isFinded = true;
+        }
+
         frontCurrent = !frontCurrent;
         frontNumber++;
     }
 
     return isFinished;
+}
+
+void WaveAlgorithm::MakePath()
+{
+    path.push_back(finish);
+    
+    int count{ map[finish.Row][finish.Column] };
+
+    while (count)
+    {
+        Cell cellLast = path.back();
+        for (auto cellOffset : Offset)
+        {
+            Cell cellNew = cellLast + cellOffset;
+            if (map[cellNew.Row][cellNew.Column] == count - 1)
+            {
+                path.push_back(cellNew);
+                break;
+            }
+        }
+        count--;
+    }
 }
 
 void WaveAlgorithm::Show()
@@ -116,4 +144,33 @@ void WaveAlgorithm::Show()
         }
         std::cout << "\n";
     }
+    std::cout << "\n";
+}
+
+void WaveAlgorithm::ShowPath()
+{
+    for (int row{}; row < map.size(); row++)
+    {
+        for (int column{}; column < map[row].size(); column++)
+        {
+            if (map[row][column] == CellType::Wall)
+                std::cout << "##";
+            else
+            {
+                bool isPath{ false };
+                for(auto cellPath : path)
+                    if (cellPath == Cell{ row, column })
+                    {
+                        isPath = true;
+                        break;
+                    }
+                if (isPath)
+                    std::cout << std::setw(2) << map[row][column];
+                else
+                    std::cout << "  ";
+            }
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n";
 }

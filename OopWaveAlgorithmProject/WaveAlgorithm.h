@@ -54,5 +54,6 @@ public:
 	void MakePath();
 
 	void Show();
+	void ShowPath();
 };
 
