@@ -29,6 +29,11 @@ struct Cell
 	{
 		return (cell1.Row == cell2.Row && cell1.Column == cell2.Column);
 	}
+
+	friend Cell operator+(const Cell& cell1, const Cell& cell2)
+	{
+		return Cell{ cell1.Row + cell2.Row, cell1.Column + cell2.Column };
+	}
 };
 
 const std::vector<Cell> Offset{ {-1, 0}, {0, 1}, {1, 0}, {0, -1} };

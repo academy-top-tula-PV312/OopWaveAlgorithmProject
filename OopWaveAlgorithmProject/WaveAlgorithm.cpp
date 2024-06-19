@@ -63,28 +63,40 @@ bool WaveAlgorithm::MakeWaves()
 
     fronts[frontCurrent].push_back(start);
     
-    bool isBreak;
+    bool isFinded{ false };
 
-    while (true)
+    while(!isFinded)
     {
         fronts[!frontCurrent].clear();
 
         for (auto cellCurrent : fronts[frontCurrent])
         {
-            int rowCurrent = cellCurrent.Row;
-            int columnCurrent = cellCurrent.Column;
-
             for (auto cellOffset : Offset)
             {
-                int rowOffset{ rowCurrent + cellOffset.Row };
-                int columnOffset{ columnCurrent + cellOffset.Column };
+                Cell cellNew = cellCurrent + cellOffset;
 
-                if (rowOffset < 0 || rowOffset >= map.size()
-                    || columnOffset < 0 || columnOffset >= map[0].size())
+                if (cellNew.Row < 0 || cellNew.Row >= map.size()
+                    || cellNew.Column < 0 || cellNew.Column >= map[0].size())
                     continue;
+                if (map[cellNew.Row][cellNew.Column] == CellType::Space
+                    || map[cellNew.Row][cellNew.Column] == CellType::Finish)
+                {
+                    fronts[!frontCurrent].push_back(cellNew);
+                    map[cellNew.Row][cellNew.Column] = frontNumber;
+                    if (cellNew == finish)
+                    {
+                        isFinded = true;
+                        break;
+                    }
+                }
             }
+            if (isFinded) break;
         }
+        frontCurrent = !frontCurrent;
+        frontNumber++;
     }
+
+    return isFinished;
 }
 
 void WaveAlgorithm::Show()
